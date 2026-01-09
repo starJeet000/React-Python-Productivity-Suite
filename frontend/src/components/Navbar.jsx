@@ -1,7 +1,7 @@
 import { Box, Container, Flex, Text, Button, useColorMode, useColorModeValue} from "@chakra-ui/react";
 import {IoMoon} from "react-icons/io5";
 import {LuSun} from "react-icons/lu";
-import CreateUserModal from "./CreateUsermodal";
+import CreateUserModal from "./CreateUserModal";
 const Navbar = ({setUsers}) => {
     const { colorMode, toggleColorMode } = useColorMode();
   return <Container maxW={"900px"}>
