@@ -1,4 +1,4 @@
-# React-Python-Productivity-Suite
+# React-Python-Best-Friends-WebApp
 
 ## Project Overview
 
