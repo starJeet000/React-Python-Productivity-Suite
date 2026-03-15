@@ -1,42 +1,42 @@
-import { Flex, Grid, Spinner, Text } from "@chakra-ui/react";
-// import { USERS } from "../dummy/dummy";
-import UserCard from "./UserCard";
+import { Flex, Grid, Spinner, Text, useColorModeValue } from "@chakra-ui/react";
+// import { USERS } from "../../../dummy/dummy";
+import UserCard from "./UserCard.jsx";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../../../App.jsx";
 
-const UserGrid = ({users, setUsers}) => {
+const UserGrid = ({ users, setUsers }) => {
   const [isLoading, setisLoading] = useState(true);
 
   useEffect(() => {
     const getUsers = async () => {
-      try{
+      try {
         const res = await fetch(BASE_URL + "/friends")
         const data = await res.json();
 
-        if(!res.ok) {
+        if (!res.ok) {
           throw new Error(data.error);
         }
         setUsers(data);
 
-      } catch (error){
+      } catch (error) {
         console.error(error)
-      }finally{
+      } finally {
         setisLoading(false);
       }
     }
     getUsers();
-  },[setUsers]);
+  }, [setUsers]);
 
 
   return (
     <>
       <Grid
-      templateColumns={{
-        base: "1fr",
-        md: "repeat(2, 1fr)",
-        lg: "repeat(3, 1fr)",
-      }}
-      gap={4}
+        templateColumns={{
+          base: "1fr",
+          md: "repeat(2, 1fr)",
+          lg: "repeat(3, 1fr)",
+        }}
+        gap={4}
       >
 
         {users.map((user) => (
@@ -52,11 +52,8 @@ const UserGrid = ({users, setUsers}) => {
 
       {!isLoading && users.length === 0 && (
         <Flex justifyContent={"center"}>
-          <Text fontSize={"xl"}>
-            <Text as={"span"} fontSize={"2xl"} fontWeight={"bold"} mr={2}>
-              Poor You! 😔
-            </Text>
-            No Friends Found
+          <Text fontSize="xl" color={useColorModeValue("gray.600", "gray.400")}>
+            No team members found.
           </Text>
         </Flex>
       )}

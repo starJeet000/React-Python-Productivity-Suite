@@ -1,7 +1,7 @@
 import { Button, Flex, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Textarea, useDisclosure, useToast, } from "@chakra-ui/react";
 import { useState } from "react";
 import { BiAddToQueue } from "react-icons/bi";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../../../App.jsx";
 
 
 const CreateUserModal = ({setUsers}) => {
@@ -73,7 +73,7 @@ const CreateUserModal = ({setUsers}) => {
     <ModalOverlay />
     <form onSubmit={handleCreateUser}>
     <ModalContent>
-      <ModalHeader>My New BFF 🥰</ModalHeader>
+      <ModalHeader>Add New Team Member</ModalHeader>
       <ModalCloseButton />
 
       <ModalBody pb={6}>
