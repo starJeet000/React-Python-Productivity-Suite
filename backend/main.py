@@ -51,7 +51,6 @@ def create_member():
 def update_member(id):
     try:
         data = request.json
-        # Only update the fields provided in the request body
         response = supabase.table('member').update(data).eq('id', id).execute()
         if not response.data:
             return jsonify({"error": "Member not found"}), 404
@@ -94,6 +93,14 @@ def update_task(id):
         data = request.json
         response = supabase.table('task').update(data).eq('id', id).execute()
         return jsonify(response.data[0]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/tasks/<int:id>", methods=["DELETE"])
+def delete_task(id):
+    try:
+        response = supabase.table('task').delete().eq('id', id).execute()
+        return jsonify({"msg": "Task deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
