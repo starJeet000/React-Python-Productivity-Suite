@@ -10,27 +10,23 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# 2. Supabase Connection (Direct HTTPS Client)
+# 2. Supabase Connection
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 # ==========================================
-# --- API ROUTES ---
+# --- MEMBER API ROUTES ---
 # ==========================================
 
-# GET all members
 @app.route("/api/members", methods=["GET"])
 def get_members():
     try:
-        # Check your Supabase Table Editor: 
-        # If the table is plural, change 'member' to 'members'
         response = supabase.table('member').select("*").execute()
         return jsonify(response.data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# POST a new member
 @app.route("/api/members", methods=["POST"])
 def create_member():
     try:
@@ -51,12 +47,53 @@ def create_member():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# GET all tasks
+@app.route("/api/members/<int:id>", methods=["PATCH"])
+def update_member(id):
+    try:
+        data = request.json
+        # Only update the fields provided in the request body
+        response = supabase.table('member').update(data).eq('id', id).execute()
+        if not response.data:
+            return jsonify({"error": "Member not found"}), 404
+        return jsonify(response.data[0]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/members/<int:id>", methods=["DELETE"])
+def delete_member(id):
+    try:
+        response = supabase.table('member').delete().eq('id', id).execute()
+        return jsonify({"msg": "Member deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ==========================================
+# --- TASK API ROUTES (KANBAN) ---
+# ==========================================
+
 @app.route("/api/tasks", methods=["GET"])
 def get_tasks():
     try:
         response = supabase.table('task').select("*").execute()
         return jsonify(response.data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/tasks", methods=["POST"])
+def create_task():
+    try:
+        data = request.json
+        response = supabase.table('task').insert(data).execute()
+        return jsonify(response.data[0]), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/tasks/<int:id>", methods=["PATCH"])
+def update_task(id):
+    try:
+        data = request.json
+        response = supabase.table('task').update(data).eq('id', id).execute()
+        return jsonify(response.data[0]), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -70,14 +107,9 @@ dist_folder = os.path.join(frontend_folder, "dist")
 @app.route("/", defaults={"filename": ""})
 @app.route("/<path:filename>")
 def index(filename):
-    # This ensures API requests don't get 'eaten' by the frontend server
-    if filename.startswith("api/"):
-        return jsonify({"error": "Endpoint not found"}), 404
-
     if not filename:
         filename = "index.html"
     return send_from_directory(dist_folder, filename)
 
 if __name__ == "__main__":
-    # Check your terminal: it should be http://127.0.0.1:5000
     app.run(debug=True)
